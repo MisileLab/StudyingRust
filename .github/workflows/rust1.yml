@@ -1,0 +1,28 @@
+name: Rust
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build --release
+    - name: Run tests
+      run: cargo test
+    - name: Archive Release
+      uses: thedoctor0/zip-release@master
+      with:
+        filename: 'release.zip'
+        exclusions: '.github'
+    - name: Upload Release
+      uses: ncipollo/release-action@v1
+      with:
+          artifacts: "release.zip"
+          token: ${{ secrets.GITHUBTOKEN }}
